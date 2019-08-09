@@ -119,7 +119,7 @@ def get_singermid(page_list, cookie_dict, index):
                     # 获取歌手姓名、唯一标识的singermid
                     singer_name = singer.get('singer_name', '')
                     singermid = singer.get('singer_mid', '')
-                    # print('>' * 20, f'singer: {singer_name}, singer_mid: {singermid}', '<' * 20)
+                    print('>' * 20, f'singer: {singer_name}, singer_mid: {singermid}', '<' * 20)
 
                     # 获取当前文件的文件夹路径
                     dir_path = os.path.dirname(os.path.abspath('__name__'))
@@ -141,29 +141,34 @@ def get_all_singer(cookie_dict, index):
     singer_pages = math.ceil(float(total_singer) / 80.0)
     page_list = [x for x in range(1, singer_pages+1)]
 
-    thread_num = 10
+    # 非多线程
+    get_singermid(page_list, cookie_dict, index)
 
-    # 计算每条线程执行的page平均数
-    each_thread_pages = singer_pages // thread_num
-    more_thread_nums = singer_pages % thread_num
-    threads = ThreadPoolExecutor(max_workers=thread_num)
-
-    for i in range(more_thread_nums):
-        start = i * (each_thread_pages + 1)
-        end = start + each_thread_pages + 1
-        threads.submit(get_singermid, page_list[start:end], cookie_dict, index)
-    for i in range(thread_num - more_thread_nums):
-        start = i * each_thread_pages
-        end = start + each_thread_pages
-        threads.submit(get_singermid, page_list[start:end], cookie_dict, index)
+    # # 多线程版
+    # thread_num = 10
+    #
+    # # 计算每条线程执行的page平均数
+    # each_thread_pages = singer_pages // thread_num
+    # more_thread_nums = singer_pages % thread_num
+    # threads = ThreadPoolExecutor(max_workers=thread_num)
+    #
+    # for i in range(more_thread_nums):
+    #     start = i * (each_thread_pages + 1)
+    #     end = start + each_thread_pages + 1
+    #     threads.submit(get_singermid, page_list[start:end], cookie_dict, index)
+    # for i in range(thread_num - more_thread_nums):
+    #     start = i * each_thread_pages
+    #     end = start + each_thread_pages
+    #     threads.submit(get_singermid, page_list[start:end], cookie_dict, index)
 
 
 def my_process():
-    myprocess = ProcessPoolExecutor(max_workers=27)
+    # myprocess = ProcessPoolExecutor(max_workers=27)
     cookie_dict = get_cookies()
     if cookie_dict:
         for index in range(1, 28):
-            myprocess.submit(get_all_singer, cookie_dict, index)
+            get_all_singer(cookie_dict, index)
+            # myprocess.submit(get_all_singer, cookie_dict, index)
     else:
         print(f'cookies false: {cookie_dict}')
     print('Process DOWN')
@@ -179,7 +184,3 @@ if __name__ == '__main__':
         t2 = datetime.datetime.now()
         print('花费时间：', t2-t1)
         print(f'count_singer = {count_singer}')
-
-
-
-
