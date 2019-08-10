@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 # 连接数据库
-db_engine = create_engine("mysql+pymysql://yanglin:123456@localhost:3306/music_db?charset=utf8")
+db_engine = create_engine("mysql+pymysql://yanglin:123456@localhost:3306/music_db?charset=utf8mb4")
 
 # 创建会话对象，用于数据表的操作
 db_session = sessionmaker(bind=db_engine)
@@ -17,11 +17,11 @@ class Song(Base):
     __tablename__ = 'song'
     # 字段、属性
     song_id = Column(Integer, primary_key=True)
-    song_name = Column(String(100))
-    song_album = Column(String(200))
-    song_interval = Column(String(50))
-    song_songmid = Column(String(50))
-    song_singer = Column(String(100))
+    song_name = Column(String(50))
+    song_album = Column(String(100))
+    song_interval = Column(String(25))
+    song_songmid = Column(String(25))
+    song_singer = Column(String(50))
 
 
 # 创建数据表
@@ -32,7 +32,7 @@ Base.metadata.create_all(db_engine)
 def insert_data(song_dict):
     # 连接数据库
     db_engine_ = create_engine("mysql+pymysql://yanglin:123456@localhost:3306/music_db?charset=utf8")
-    # 创建会话对象，用于操作数据库
+    # 创建绘会话对象，用于操作数据库
     db_session_ = sessionmaker(bind=db_engine_)
     sql_session_ = db_session_()
     data = Song(
