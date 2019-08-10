@@ -100,11 +100,12 @@ def get_singer_songs(singermid, cookie_dict, dir_path):
                 songmid = song.get('ksong', {}).get('mid', '') or song.get('mid', '') or song.get('file', {}).get(
                     'media_mid', '')
 
-                song_dict['song_name'] = song.get('name', '')
-                song_dict['song_album'] = song.get('album', {}).get('name', '')
+                # 切片是为了避免字符串太长无法入库
+                song_dict['song_name'] = song.get('name', '')[:50]
+                song_dict['song_album'] = song.get('album', {}).get('name', '')[:100]
                 song_dict['song_interval'] = song.get('interval', 0)
                 song_dict['song_songmid'] = songmid
-                song_dict['song_singer'] = song.get('singer', [{}, ])[0].get('name', '')
+                song_dict['song_singer'] = song.get('singer', [{}, ])[0].get('name', '')[:50]
                 if songmid:
                     info = download(cookie_dict.get('pgv_pvid', ''), songmid, cookie_dict, dir_path)
                     if info:
@@ -200,3 +201,6 @@ if __name__ == '__main__':
     finally:
         t2 = datetime.datetime.now()
         print('花费时间：', t2-t1)
+
+
+
